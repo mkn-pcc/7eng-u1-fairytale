@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinders & Secrets: The Servant's Tale</title>
     <style>
-        :root { --parchment: #fdf5e6; --ink: #2c1b18; --accent: #8b4513; --gold: #d4af37; }
+        :root { --parchment: #fdf5e6; --ink: #2c1b18; --accent: #8b4513; --gold: #d4af37; --blood: #8b0000; }
         body { font-family: 'Georgia', serif; background: #e8dcc4; color: var(--ink); display: flex; justify-content: center; padding: 20px; line-height: 1.6; }
         #game-box { max-width: 700px; background: var(--parchment); padding: 40px; border: 3px double var(--accent); border-radius: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; }
         #stats-bar { font-size: 0.85em; text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 1px solid #ccc; margin-bottom: 25px; padding-bottom: 10px; color: var(--accent); font-weight: bold; display: flex; justify-content: space-between; }
@@ -13,6 +13,7 @@
         .story-p { font-size: 1.15em; margin-bottom: 25px; }
         button { display: block; width: 100%; padding: 18px; margin: 12px 0; background: #fff; border: 1.5px solid var(--accent); border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 1.05em; transition: 0.3s; text-align: left; box-shadow: 2px 2px 0px var(--accent); }
         button:hover { background: var(--accent); color: white; transform: translateX(5px); box-shadow: 0px 0px 0px var(--accent); }
+        .quote { font-style: italic; color: var(--blood); border-left: 3px solid var(--blood); padding-left: 15px; margin: 15px 0; }
         .secret-unlock { color: var(--gold); font-weight: bold; border: 2px solid var(--gold); padding: 10px; text-align: center; margin-top: 20px; animation: glow 2s infinite; }
         @keyframes glow { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
     </style>
@@ -22,7 +23,7 @@
 <div id="game-box">
     <div id="stats-bar">
         <span>Gossip Meter: <span id="gossip">0</span></span>
-        <span>Mode: Perspective Shift</span>
+        <span>Mode: Grimm Perspective</span>
     </div>
     <h1>Cinders & Secrets</h1>
     <div id="story" class="story-p"></div>
@@ -58,18 +59,18 @@
             ]
         },
         night2: {
-            text: "Night two. She hides in a pear tree. Again, the Prince uses an ax. On the third day, he smears the stairs with pitch. Cinderella's golden shoe sticks! He brings it to the house. The eldest sister takes a knife to her own foot to fit it. You see the blood.",
+            text: "Night two. She hides in a pear tree. Again, the Prince uses an ax. On the third day, he smears the stairs with pitch. Cinderella's golden shoe sticks! He brings it to the house. The eldest sister takes a knife and cuts off her toe to fit the shoe. As they ride past the hazel tree, the pigeons cry out:",
             choices: [
-                { text: "Speak up: 'Rook di goo! There's blood in the shoe!'", nextNode: 'sister2', gossip: 3 },
-                { text: "Stay silent. The 'Tradition' says the Prince must choose her.", nextNode: 'sister2', gossip: 0 }
+                { text: "Listen to the birds: 'Rook di goo! There's blood in the shoe!'", nextNode: 'sister2', gossip: 3 },
+                { text: "Stay silent. The Prince doesn't seem to hear them yet.", nextNode: 'sister2', gossip: 0 }
             ]
         },
         sister2: {
-            text: "The Prince returns the false bride. The second sister cuts off her heel. More blood! Finally, the Prince insists on seeing the 'deformed little Cinderella'. The gold shoe fits. He cries out, 'She is my true bride!' But the wedding brings a final, dark punishment from the pigeons.",
+            text: "The Prince notices the blood and returns the false bride. The second sister cuts off her heel. Again, the pigeons in the hazel tree scream their warning. Finally, 'deformed little Cinderella' is called from the ashes. The golden slipper fits perfectly.",
             choices: [{ text: "Go to the Church for the Finale", nextNode: 'finale' }]
         },
         finale: {
-            text: "The pigeons peck out the sisters' eyes as punishment. The story ends, but did you truly understand the 'fractured' elements? To unlock the secret report, you must prove you can 'Show, Don't Tell'.",
+            text: "At the wedding, the pigeons peck out the sisters' eyes as punishment for their wickedness. The story ends, but did you truly understand the 'fractured' elements? To unlock the secret report, you must prove you can 'Show, Don't Tell'.",
             choices: [
                 { text: "I am ready for the challenge.", nextNode: 'checkScore' }
             ]
@@ -93,7 +94,7 @@
             ]
         },
         winSecret: {
-            text: "EXCELLENT. You chose Sentence B—it 'shows' power through action and detail. You have mastered the 'My Voice -> Other Voices' transition. You have seen the missing voices of the palace servants and the blood on the golden shoe.",
+            text: "EXCELLENT. You chose Sentence B—it 'shows' power through action and detail. You have mastered the 'My Voice -> Other Voices' transition. You have seen the missing voices of the palace servants and the birds in the hazel tree.",
             choices: [{ text: "Finish Revision", nextNode: 'start', gossip: -99 }]
         },
         failSecret: {
