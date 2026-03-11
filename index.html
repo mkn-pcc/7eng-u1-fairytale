@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinders & Secrets: The Servant's Tale</title>
+    <style>
+        :root { --parchment: #fdf5e6; --ink: #2c1b18; --accent: #8b4513; --gold: #d4af37; }
+        body { font-family: 'Georgia', serif; background: #e8dcc4; color: var(--ink); display: flex; justify-content: center; padding: 20px; line-height: 1.6; }
+        #game-box { max-width: 700px; background: var(--parchment); padding: 40px; border: 3px double var(--accent); border-radius: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; }
+        #stats-bar { font-size: 0.85em; text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 1px solid #ccc; margin-bottom: 25px; padding-bottom: 10px; color: var(--accent); font-weight: bold; display: flex; justify-content: space-between; }
+        h1 { font-variant: small-caps; text-align: center; margin-top: 0; color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 10px; }
+        .story-p { font-size: 1.15em; margin-bottom: 25px; }
+        button { display: block; width: 100%; padding: 18px; margin: 12px 0; background: #fff; border: 1.5px solid var(--accent); border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 1.05em; transition: 0.3s; text-align: left; box-shadow: 2px 2px 0px var(--accent); }
+        button:hover { background: var(--accent); color: white; transform: translateX(5px); box-shadow: 0px 0px 0px var(--accent); }
+        .secret-unlock { color: var(--gold); font-weight: bold; border: 2px solid var(--gold); padding: 10px; text-align: center; margin-top: 20px; animation: glow 2s infinite; }
+        @keyframes glow { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+    </style>
+</head>
+<body>
+
+<div id="game-box">
+    <div id="stats-bar">
+        <span>Gossip Meter: <span id="gossip">0</span></span>
+        <span>Mode: Perspective Shift</span>
+    </div>
+    <h1>Cinders & Secrets</h1>
+    <div id="story" class="story-p"></div>
+    <div id="choices"></div>
+    <div id="secret-msg" style="display:none;" class="secret-unlock">✨ ANALYTICAL INSIGHT UNLOCKED ✨</div>
+</div>
+
+<script>
+    const storyNodes = {
+        start: {
+            text: "You are Elara, a palace scullery maid. You witness a strange sight: the girl they call 'Cinderella' planting a hazel twig on her mother's grave. She weeps until it grows into a tree. The Step-sisters only care about the pearls their father brought back. What is your narrative assessment?",
+            choices: [
+                { text: "The sisters are classic 'Villains'; Cinderella is a helpless 'Victim'.", nextNode: 'victim', gossip: 1 },
+                { text: "The hazel twig is a 'Symbolic Object' that will shift the power balance.", nextNode: 'symbolic', gossip: 3 }
+            ]
+        },
+        symbolic: {
+            text: "Keen eye. You've noticed the 'Magical Element'. The Step-mother scatters lentils in the ashes as a challenge. Two white pigeons fly in to help Cinderella. This 'fractures' the traditional idea of working alone. The King announces a three-day festival. Do you help Cinderella prepare?",
+            choices: [
+                { text: "No. Her 'Voice' is too quiet to be heard at a ball.", nextNode: 'night1', gossip: 1 },
+                { text: "I watch as the white bird in the tree throws down a gold dress. I keep her secret.", nextNode: 'night1', gossip: 3 }
+            ]
+        },
+        victim: {
+            text: "You see only the surface tropes. Cinderella begs to go to the festival, but she is mocked for being 'covered in dust and dirt'. However, a white bird throws down a gold and silver dress from the hazel tree. She arrives at the ball, and the Prince won't let go of her hand.",
+            choices: [{ text: "The ball ends. Follow the Prince.", nextNode: 'night1' }]
+        },
+        night1: {
+            text: "Night one ends. Cinderella eludes the Prince by jumping into the palace pigeon coop. The Prince asks you for an ax to chop it down! How do you view the Prince's 'Hero' archetype now?",
+            choices: [
+                { text: "He is a 'Hero' doing whatever it takes to find his bride.", nextNode: 'night2', gossip: 0 },
+                { text: "He is a 'Trickster' using force; his power is becoming destructive.", nextNode: 'night2', gossip: 3 }
+            ]
+        },
+        night2: {
+            text: "Night two. She hides in a pear tree. Again, the Prince uses an ax. On the third day, he smears the stairs with pitch. Cinderella's golden shoe sticks! He brings it to the house. The eldest sister takes a knife to her own foot to fit it. You see the blood.",
+            choices: [
+                { text: "Speak up: 'Rook di goo! There's blood in the shoe!'", nextNode: 'sister2', gossip: 3 },
+                { text: "Stay silent. The 'Tradition' says the Prince must choose her.", nextNode: 'sister2', gossip: 0 }
+            ]
+        },
+        sister2: {
+            text: "The Prince returns the false bride. The second sister cuts off her heel. More blood! Finally, the Prince insists on seeing the 'deformed little Cinderella'. The gold shoe fits. He cries out, 'She is my true bride!' But the wedding brings a final, dark punishment from the pigeons.",
+            choices: [{ text: "Go to the Church for the Finale", nextNode: 'finale' }]
+        },
+        finale: {
+            text: "The pigeons peck out the sisters' eyes as punishment. The story ends, but did you truly understand the 'fractured' elements? To unlock the secret report, you must prove you can 'Show, Don't Tell'.",
+            choices: [
+                { text: "I am ready for the challenge.", nextNode: 'checkScore' }
+            ]
+        },
+        checkScore: {
+            text: "Evaluation in progress...",
+            choices: [],
+            onLoad: function() {
+                if (gossipCount >= 8) {
+                    renderNode('showDontTell');
+                } else {
+                    renderNode('normalEnd');
+                }
+            }
+        },
+        showDontTell: {
+            text: "Gossip Meter High! You have the 'Voice' of a narrator. Which sentence 'SHOWS' the Step-mother's power rather than just 'TELLING' us she is powerful?",
+            choices: [
+                { text: "Sentence A: 'The Step-mother was very powerful and everyone feared her.'", nextNode: 'failSecret', gossip: 0 },
+                { text: "Sentence B: 'The Step-mother didn't look up from her tea as she ordered the scullery maid to scrub the cellar with a toothbrush.'", nextNode: 'winSecret', gossip: 5 }
+            ]
+        },
+        winSecret: {
+            text: "EXCELLENT. You chose Sentence B—it 'shows' power through action and detail. You have mastered the 'My Voice -> Other Voices' transition. You have seen the missing voices of the palace servants and the blood on the golden shoe.",
+            choices: [{ text: "Finish Revision", nextNode: 'start', gossip: -99 }]
+        },
+        failSecret: {
+            text: "That 'Tells' rather than 'Shows'. You need more revision on narrative techniques! The traditional ending stands: Cinderella is Queen, but the servants are still scrubbing.",
+            choices: [{ text: "Try Again", nextNode: 'start', gossip: -99 }]
+        },
+        normalEnd: {
+            text: "Revision Complete. You followed the traditional path. To see the 'Secret Narrative Report' next time, try to look for missing voices and challenge the archetypes more deeply.",
+            choices: [{ text: "Restart Game", nextNode: 'start', gossip: -99 }]
+        }
+    };
+
+    let gossipCount = 0;
+
+    function renderNode(nodeId) {
+        const node = storyNodes[nodeId];
+        const storyDiv = document.getElementById('story');
+        const choiceDiv = document.getElementById('choices');
+        const secretMsg = document.getElementById('secret-msg');
+        
+        storyDiv.innerHTML = `<p>${node.text}</p>`;
+        choiceDiv.innerHTML = '';
+
+        if (gossipCount >= 8) { secretMsg.style.display = 'block'; } 
+        else { secretMsg.style.display = 'none'; }
+
+        if (node.onLoad) {
+            node.onLoad();
+            return;
+        }
+
+        node.choices.forEach(c => {
+            const btn = document.createElement('button');
+            btn.innerText = c.text;
+            btn.onclick = () => {
+                if (c.gossip === -99) { gossipCount = 0; }
+                else { gossipCount += c.gossip; }
+                document.getElementById('gossip').innerText = gossipCount;
+                renderNode(c.nextNode);
+            };
+            choiceDiv.appendChild(btn);
+        });
+    }
+
+    renderNode('start');
+</script>
+</body>
+</html>
